@@ -1,0 +1,34 @@
+### 1. Создать новую форму
+POST http://127.0.0.1:3001/api/manager/forms
+Content-Type: application/json
+
+{
+  "title": "Отклик на стажировку (Свежий тест)",
+  "fields": [
+    {
+      "type": "text",
+      "label": "Ваше имя",
+      "is_required": true
+    },
+    {
+      "type": "text",
+      "label": "Email",
+      "is_required": true
+    },
+    {
+      "type": "select",
+      "label": "Курс обучения",
+      "options": ["1 курс", "2 курс", "3 курс", "4 курс"],
+      "is_required": true
+    },
+    {
+      "type": "checkbox",
+      "label": "Согласен с обработкой персональных данных",
+      "is_required": true
+    }
+  ]
+}
+
+### 2. Опубликовать форму
+# ⚠️ ВАЖНО: Замени цифру "2" в URL на реальный "id", который ты получишь в ответе на запрос №1!
+POST http://127.0.0.1:3001/api/manager/forms/15/publish

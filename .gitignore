@@ -1,0 +1,7 @@
+node_modules/
+dist/
+frontend/dist/
+backend/forms_mvp.db
+*.log
+.env
+.DS_Store
