@@ -1,62 +1,41 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { PublicForm } from './components/PublicForm';
-import { AdminPanel } from './components/AdminPanel';
-
-// Обертка для публичной формы, чтобы брать UUID из URL
-const PublicFormPage: React.FC = () => {
-    // Берем UUID из URL (например, /form/12345...)
-    // Если UUID нет в URL, можно показать форму по умолчанию или ошибку
-    const pathParts = window.location.pathname.split('/');
-    const formUuid = pathParts[pathParts.length - 1] || '';
-
-    if (!formUuid) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-800 mb-4">Форма не найдена</h1>
-                    <Link to="/admin" className="text-indigo-600 hover:underline">Перейти в админку</Link>
-                </div>
-            </div>
-        );
-    }
-
-    return <PublicForm formUuid={formUuid} />;
-};
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import AdminList from './pages/AdminList';
+import AdminCreate from './pages/AdminCreate';
+import PublicForm from './pages/PublicForm';
+import AdminResponses from './pages/AdminResponses';
 
 function App() {
+    const location = useLocation();
+    // Проверяем, находимся ли мы в админке
+    const isAdminRoute = location.pathname.startsWith('/admin');
+
     return (
-        <Router>
-            <div className="min-h-screen bg-gray-100">
-                {/* Простая навигация для удобства тестирования */}
-                <nav className="bg-white shadow-sm p-4 mb-8">
-                    <div className="max-w-4xl mx-auto flex gap-4">
-                        <Link to="/admin" className="text-indigo-600 font-medium hover:text-indigo-800">Админка (Создать форму)</Link>
-                        <span className="text-gray-300">|</span>
-                        <Link to="/" className="text-gray-600 hover:text-gray-800">Главная</Link>
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            {/* Навигация рендерится только для админки */}
+            {isAdminRoute && (
+                <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                    <h1 className="text-xl font-bold text-blue-600">Career Form MVP</h1>
+                    <div className="space-x-4">
+                        <Link to="/admin" className="text-gray-600 hover:text-blue-600 font-medium">
+                            Список форм
+                        </Link>
+                        <Link to="/admin/create" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                            Создать форму
+                        </Link>
                     </div>
                 </nav>
+            )}
 
+            <main className={isAdminRoute ? "max-w-5xl mx-auto p-6" : "max-w-2xl mx-auto p-6 mt-10"}>
                 <Routes>
-                    {/* Маршрут админки по ТЗ */}
-                    <Route path="/admin" element={<AdminPanel />} />
-
-                    {/* Маршрут публичной формы по ссылке из админки */}
-                    <Route path="/form/:uuid" element={<PublicFormPage />} />
-
-                    {/* Дефолтный маршрут (можно оставить пустым или редирект) */}
-                    <Route path="/" element={
-                        <div className="max-w-2xl mx-auto p-8 text-center">
-                            <h1 className="text-3xl font-bold text-gray-800 mb-4">Сервис кастомных форм отклика</h1>
-                            <p className="text-gray-600 mb-6">Перейдите в админку, чтобы создать новую форму для студентов.</p>
-                            <Link to="/admin" className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                                Создать форму
-                            </Link>
-                        </div>
-                    } />
+                    <Route path="/admin" element={<AdminList />} />
+                    <Route path="/admin/create" element={<AdminCreate />} />
+                    <Route path="/f/:uuid" element={<PublicForm />} />
+                    <Route path="/admin/responses/:uuid" element={<AdminResponses />} />
+                    <Route path="*" element={<div className="text-center py-10 text-gray-500">Страница не найдена</div>} />
                 </Routes>
-            </div>
-        </Router>
+            </main>
+        </div>
     );
 }
 
