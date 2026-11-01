@@ -38,5 +38,5 @@ npm start
 
 ---
 
-## 🛠 Стек
+## Стек
 Node.js 20+, Express, @libsql/client, Zod, React, TypeScript,Tailwind CSS
